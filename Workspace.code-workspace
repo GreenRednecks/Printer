@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "path": "..\\..\\platformIO Projects\\NodeMCU"
+        },
+        {
+            "name": "Display",
+            "path": "..\\..\\..\\Dateien\\PlatformIO\\Projects\\Display"
+        },
+        {
+            "name": "Display2",
+            "path": "..\\..\\..\\Dateien\\PlatformIO\\Projects\\Display2"
+        },
+        {
+            "name": "Printer",
+            "path": "."
+        }
+    ]
+}

@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <Arduino_JSON.h>
-#include <keys.h>
+#include <wallet.h>
 
 #include "Adafruit_Thermal.h"
 #include "Adafruit_Keypad.h"

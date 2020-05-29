@@ -1,2 +1,2 @@
 const char *SSID = "Your SSID";
-const char *PASSWORD = "Your Password";
+const char *PASSWORD = "Your  Password";

@@ -154,6 +154,9 @@ void getRequest(const char *url, const char *host)
     
       Serial.print("JSON object = ");
       Serial.println(myObject);
+      int sum = 0;
+      
+      
     
       // // myObject.keys() can be used to get an array of all the keys in the object
       // JSONVar keys = myObject.keys();

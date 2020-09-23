@@ -9,8 +9,8 @@
 #include <LiquidCrystal.h>
 
 //wifi
-const char *ssid = SSID;             //Hier SSID eures WLAN Netzes eintragen
-const char *password = PASSWORD; //Hier euer Passwort des WLAN Netzes eintragen
+const char *ssid = SSID;
+const char *password = PASSWORD; 
 const char *host = "192.168.178.55";           //Server der die werte empfangen soll
                                                //(er sollte feste IP haben)
 const char *url = "/eggs";

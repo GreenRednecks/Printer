@@ -37,8 +37,8 @@ Adafruit_Keypad customKeypad = Adafruit_Keypad(makeKeymap(keys), rowPins, colPin
 
 ////Printer
 #include "SoftwareSerial.h"
-#define TX_PIN 10 // Arduino transmit  YELLOW WIRE  labeled RX on printer
-#define RX_PIN 11 // Arduino receive   GREEN WIRE   labeled TX on printer
+#define TX_PIN 13//10 // Arduino transmit  YELLOW WIRE  labeled RX on printer
+#define RX_PIN 4 //11 // Arduino receive   GREEN WIRE   labeled TX on printer
 
 SoftwareSerial mySerial(RX_PIN, TX_PIN); // Declare SoftwareSerial obj first
 Adafruit_Thermal printer(&mySerial);     // Pass addr to printer constructor
@@ -92,7 +92,7 @@ void setup()
   // NOTE: SOME PRINTERS NEED 9600 BAUD instead of 19200, check test page.
   mySerial.begin(19200); // Initialize SoftwareSerial
   printer.begin();       // Init printer (same regardless of serial type)
-  printer.println(F("Das ist der Erste echte Test, mit mehr Text als in eine Zeile passt"));
+  // printer.println(F("Das ist der Erste echte Test, mit mehr Text als in eine Zeile passt"));
   // printer.sleep();      // Tell printer to sleep
   ////////End Printer/////////////////////
 
@@ -222,6 +222,67 @@ void postRequest(const char *url, const char *host, String data)
 
 }
 
+
+//prints given Text on Printer
+void printTextonPrinter(String text){
+  Serial.println("vor drucker");
+   printer.println(F("Das ist der Erste echte Test, mit mehr Text als in eine Zeile passt"));
+//   printer.justify('C');
+//   printer.boldOn();
+//   printer.println(F("BARCODE EXAMPLES\n"));
+//   printer.boldOff();
+//   printer.justify('L');
+
+//   // There seems to be some conflict between datasheet descriptions
+//   // of barcode formats and reality.  Try Wikipedia and/or:
+//   // http://www.barcodeisland.com/symbolgy.phtml
+
+//   // Also note that strings passed to printBarcode() are always normal
+//   // RAM-resident strings; PROGMEM strings (e.g. F("123")) are NOT used.
+
+//   // UPC-A: 12 digits
+//   printer.print(F("UPC-A:"));
+//   printer.printBarcode("123456789012", UPC_A);
+
+//   // UPC-E: 6 digits ???
+// /* Commented out because I can't get this one working yet
+//   printer.print(F("UPC-E:"));
+//   printer.printBarcode("123456", UPC_E);
+// */
+
+//   // EAN-13: 13 digits (same as JAN-13)
+//   printer.print(F("EAN-13:"));
+//   printer.printBarcode("1234567890123", EAN13);
+
+//   // EAN-8: 8 digits (same as JAN-8)
+//   printer.print(F("EAN-8:"));
+//   printer.printBarcode("12345678", EAN8);
+
+//   // CODE 39: variable length w/checksum?, 0-9,A-Z,space,$%+-./:
+//   printer.print(F("CODE 39:"));
+//   printer.printBarcode("ADAFRUT", CODE39);
+
+//   // ITF: 2-254 digits (# digits always multiple of 2)
+//   printer.print(F("ITF:"));
+//   printer.printBarcode("1234567890", ITF);
+
+//   // CODABAR: variable length 0-9,A-D,%+-./:
+//   printer.print(F("CODABAR:"));
+//   printer.printBarcode("1234567890", CODABAR);
+
+//   // CODE 93: compressed version of Code 39?
+//   printer.print(F("CODE 93:"));
+//   printer.printBarcode("ADAFRUIT", CODE93);
+
+//   // CODE 128: 2-255 characters (ASCII 0-127)
+//   printer.print(F("CODE128:"));
+//   printer.printBarcode("Adafruit", CODE128);
+
+//   printer.feed(2);
+//   printer.setDefault(); // Restore printer to defaults
+  Serial.println("nach drucker");
+}
+
 void loop()
 {
   ////Keypad
@@ -279,7 +340,9 @@ void loop()
         break;
       case 'D':
         // Print Customers of the Day
-        getRequest(url, host);
+        // getRequest(url, host);
+        printTextonPrinter("test");
+
         break;
 
       default:

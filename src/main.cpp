@@ -7,6 +7,9 @@
 #include "Adafruit_Thermal.h"
 #include "Adafruit_Keypad.h"
 #include <LiquidCrystal.h>
+// #include "qrprint.h" //qrcode generator for thermal printer
+#include "qrcode.h"
+#include "qrImage.h"
 
 //wifi
 const char *ssid = SSID;
@@ -138,49 +141,46 @@ String httpGETRequest(const char* serverName) {
   return payload;
 }
 
-void getRequest(const char *url, const char *host)
+//rest call auf die menge der eier von heute
+String getAmountofToday()
 {
   if(WiFi.status()== WL_CONNECTED){
               
-      jsonGet = httpGETRequest(serverName);
-      // Serial.println(jsonGet);
+      char *endpoint = "http://192.168.178.55:8000/eggs/today/amount";
+      jsonGet = httpGETRequest(endpoint);
       JSONVar myObject = JSON.parse(jsonGet);
-  
-      // JSON.typeof(jsonVar) can be used to get the type of the var
       if (JSON.typeof(myObject) == "undefined") {
         Serial.println("Parsing input failed!");
-        return;
+        return "Parsing input failed!";
       }
-    
-      Serial.print("JSON object = ");
-      Serial.println(myObject);
-      int sum = 0;
-      
-      
-    
-      // // myObject.keys() can be used to get an array of all the keys in the object
-      // JSONVar keys = myObject.keys();
-    
-      // for (int i = 0; i < keys.length(); i++) {
-      //   JSONVar value = myObject[keys[i]];
-      //   Serial.print(keys[i]);
-      //   Serial.print(" = ");
-      //   Serial.println(value);
-      //   sensorReadingsArr[i] = double(value);
-      // }
-      // Serial.print("1 = ");
-      // Serial.println(sensorReadingsArr[0]);
-      // Serial.print("2 = ");
-      // Serial.println(sensorReadingsArr[1]);
-      // Serial.print("3 = ");
-      // Serial.println(sensorReadingsArr[2]);
+      // Serial.print("JSON object = ");
+      // Serial.println(myObject);
+      return JSON.stringify(myObject);
     }
     else {
       Serial.println("WiFi Disconnected");
     }
+}
 
-
-
+//rest call auf die menge der eier von gestern
+String getAmountofYesterday()
+{
+  if(WiFi.status()== WL_CONNECTED){
+              
+      char *endpoint = "http://192.168.178.55:8000/eggs/yesterday/amount";
+      jsonGet = httpGETRequest(endpoint);
+      JSONVar myObject = JSON.parse(jsonGet);
+      if (JSON.typeof(myObject) == "undefined") {
+        Serial.println("Parsing input failed!");
+        return "Parsing input failed!";
+      }
+      // Serial.print("JSON object = ");
+      // Serial.println(myObject);
+      return JSON.stringify(myObject);
+    }
+    else {
+      Serial.println("WiFi Disconnected");
+    }
 }
 
 //Make a post request 
@@ -193,21 +193,8 @@ void postRequest(const char *url, const char *host, String data)
       // Your Domain name with URL path or IP address with path
       http.begin(serverName);
 
-      // Specify content-type header
-      // http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-      // // Data to send with HTTP POST
-      // String httpRequestData = "api_key=tPmAT5Ab3j7F9&sensor=BME280&value1=24.25&value2=49.54&value3=1005.14";           
-      // // Send HTTP POST request
-      // int httpResponseCode = http.POST(httpRequestData);
-      
-      // If you need an HTTP request with a content type: application/json, use the following:
       http.addHeader("Content-Type", "application/json");
-      // int httpResponseCode = http.POST("{\"api_key\":\"tPmAT5Ab3j7F9\",\"sensor\":\"BME280\",\"value1\":\"24.25\",\"value2\":\"49.54\",\"value3\":\"1005.14\"}");
       int httpResponseCode = http.POST("{\"amount\":" + data +"}");
-
-      // If you need an HTTP request with a content type: text/plain
-      //http.addHeader("Content-Type", "text/plain");
-      //int httpResponseCode = http.POST("Hello, World!");
      
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
@@ -224,63 +211,43 @@ void postRequest(const char *url, const char *host, String data)
 
 
 //prints given Text on Printer
-void printTextonPrinter(String text){
-  Serial.println("vor drucker");
-   printer.println(F("Das ist der Erste echte Test, mit mehr Text als in eine Zeile passt"));
-//   printer.justify('C');
-//   printer.boldOn();
-//   printer.println(F("BARCODE EXAMPLES\n"));
-//   printer.boldOff();
-//   printer.justify('L');
+void printCustomerList(){
 
-//   // There seems to be some conflict between datasheet descriptions
-//   // of barcode formats and reality.  Try Wikipedia and/or:
-//   // http://www.barcodeisland.com/symbolgy.phtml
+/////test customers//////+
+char *customerNames[3] = {"Schmidt", "Meier", "Mueller"};
+char *customerAmount[3] = {"20 Eier", "40 Eier", "20 Eier"};
 
-//   // Also note that strings passed to printBarcode() are always normal
-//   // RAM-resident strings; PROGMEM strings (e.g. F("123")) are NOT used.
+String remoteSystemTime;
+String eggsYesterday = getAmountofYesterday();
+String eggsToday = getAmountofToday();
 
-//   // UPC-A: 12 digits
-//   printer.print(F("UPC-A:"));
-//   printer.printBarcode("123456789012", UPC_A);
+  //get current system time and prints it in reverse
+  printer.inverseOn();
+  printer.justify('C');
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer[80];
+  time (&rawtime);
+  timeinfo = localtime(&rawtime);
+  strftime(buffer,sizeof(buffer),"%d:%m:%Y %H:%M:%S",timeinfo);
+  String str(buffer);
+  printer.println((str));
+  printer.inverseOff();
 
-//   // UPC-E: 6 digits ???
-// /* Commented out because I can't get this one working yet
-//   printer.print(F("UPC-E:"));
-//   printer.printBarcode("123456", UPC_E);
-// */
 
-//   // EAN-13: 13 digits (same as JAN-13)
-//   printer.print(F("EAN-13:"));
-//   printer.printBarcode("1234567890123", EAN13);
+printer.justify('L');
+for (int i = 0; i < 3; i++){
+  printer.println(F(customerNames[i]));
+  printer.println(F(customerAmount[i]));
+  printer.println(F("__________________________"));
+}
 
-//   // EAN-8: 8 digits (same as JAN-8)
-//   printer.print(F("EAN-8:"));
-//   printer.printBarcode("12345678", EAN8);
+printer.println(("Gestern wurden insgesamt " + eggsYesterday + " Eier gelegt"));
+printer.println(("Heute wurden insgesamt " + eggsToday + " Eier gelegt"));
+printer.println("\n");
+printer.printBitmap(150, 150, image_data_qrcode); // prints qr code 
+printer.println("\n\n");
 
-//   // CODE 39: variable length w/checksum?, 0-9,A-Z,space,$%+-./:
-//   printer.print(F("CODE 39:"));
-//   printer.printBarcode("ADAFRUT", CODE39);
-
-//   // ITF: 2-254 digits (# digits always multiple of 2)
-//   printer.print(F("ITF:"));
-//   printer.printBarcode("1234567890", ITF);
-
-//   // CODABAR: variable length 0-9,A-D,%+-./:
-//   printer.print(F("CODABAR:"));
-//   printer.printBarcode("1234567890", CODABAR);
-
-//   // CODE 93: compressed version of Code 39?
-//   printer.print(F("CODE 93:"));
-//   printer.printBarcode("ADAFRUIT", CODE93);
-
-//   // CODE 128: 2-255 characters (ASCII 0-127)
-//   printer.print(F("CODE128:"));
-//   printer.printBarcode("Adafruit", CODE128);
-
-//   printer.feed(2);
-//   printer.setDefault(); // Restore printer to defaults
-  Serial.println("nach drucker");
 }
 
 void loop()
@@ -340,8 +307,8 @@ void loop()
         break;
       case 'D':
         // Print Customers of the Day
-        // getRequest(url, host);
-        printTextonPrinter("test");
+        // Serial.println( getAmountofToday());
+        printCustomerList();
 
         break;
 
@@ -361,3 +328,40 @@ void loop()
   delay(10);
 
 }
+
+
+
+
+// ////////creates an qr code and convert it to bitmap - funktioniert, nur sehr klein (version 3)////////////////
+
+// // The structure to manage the QR code
+// QRCode qrcode;
+
+// // default is VERSION 3: 29x29
+// // Allocate a chunk of memory to store the QR code
+// uint8_t qrcodeBytes[qrcode_getBufferSize(3)];
+
+// qrcode_initText(&qrcode, qrcodeBytes, 3, ECC_LOW, "HELLO WORLD");
+
+// // thermal printer needs multiples of 8 so make it 32 x 32
+// // which is 32/8 * 32 = 128 bytes
+// const int printerBuffer = 32/8 * 32;
+// uint8_t printerData[printerBuffer];
+
+// memset(printerData, 0, printerBuffer);
+
+// for (uint8_t y = 0; y < qrcode.size; y++) {
+//   for (uint8_t x = 0; x < qrcode.size; x++) {
+//     if (qrcode_getModule(&qrcode, x, y)) {
+//     // bit is on so set it in printerData
+//     uint8_t pos = y * 4 + x / 8;  // byte position
+//     uint8_t idx = 7 - x % 8;      // bit position,
+//     printerData[pos] |= (1 << idx);
+//     }
+//   }
+// }
+// // printer.setSize('L');        // Set type size, accepts 'S', 'M', 'L'
+// printer.printBitmap(32,32,printerData,false);
+// // printer.setDefault(); // Restore printer to defaults
+  
+// ///////////////////////////////////////////////////////////////////

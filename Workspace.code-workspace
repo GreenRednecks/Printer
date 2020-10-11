@@ -26,6 +26,10 @@
         {
             "name": "lcdtest",
             "path": "..\\..\\..\\Dateien\\PlatformIO\\Projects\\lcdtest"
+        },
+        {
+            "name": "ESP32 Blink",
+            "path": "..\\..\\..\\Dateien\\PlatformIO\\Projects\\ESP32 Blink"
         }
     ],
     "settings": {

@@ -22,7 +22,7 @@ RX_PIN 4   //Arduino receive   GREEN WIRE   labeled TX on printer
 requrires 9v to power
 
 Display:
-rs = 14, en = 27, d4 = 26, d5 = 25, d6 = 33, d7 = 32
+rs = 32, en = 33, d4 = 25, d5 = 26, d6 = 27, d7 = 14
 vss = GND, vdd = 5v, v0 = poti against ground, a = resistor to 5v, k = GND
 
 

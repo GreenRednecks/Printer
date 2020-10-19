@@ -11,6 +11,8 @@
 #include "qrcode.h"
 #include "qrImage.h"
 
+#define  GPIO_INPUT_IO_TRIGGER 5
+
 //wifi
 const char *ssid = SSID;
 const char *password = PASSWORD; 
@@ -50,7 +52,9 @@ bool enableInput = false;
 String input = "";
 
 //////////Display/////
-const int rs = 14, en = 27, d4 = 26, d5 = 25, d6 = 33, d7 = 32; ////32
+// const int rs = 14, en = 27, d4 = 26, d5 = 25, d6 = 33, d7 = 32; ////
+const int rs = 32, en = 33, d4 = 25, d5 = 26, d6 = 27, d7 = 14; ////
+
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 void setDisplayMenu()
@@ -82,6 +86,8 @@ void setup()
     delay(500);
     Serial.print(".");
   }
+
+
 
   Serial.println("");
   Serial.println("WiFi Verbindung aufgebaut");
@@ -326,6 +332,8 @@ void loop()
   }
 
   delay(10);
+
+
 
 }
 

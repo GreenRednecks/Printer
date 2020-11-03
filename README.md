@@ -26,4 +26,4 @@ rs = 32, en = 33, d4 = 25, d5 = 26, d6 = 27, d7 = 14
 vss = GND, vdd = 5v, v0 = poti against ground, a = resistor to 5v, k = GND
 
 
-when usb on the left, display uses pins on top and keypad on the bottom
+when usb on the right, display uses pins on top and keypad on the bottom

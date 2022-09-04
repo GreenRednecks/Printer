@@ -30,6 +30,10 @@
         {
             "name": "ESP32 Blink",
             "path": "..\\..\\..\\Dateien\\PlatformIO\\Projects\\ESP32 Blink"
+        },
+        {
+            "name": "Transistor Test",
+            "path": "..\\..\\..\\Dateien\\PlatformIO\\Projects\\Transistor Test"
         }
     ],
     "settings": {

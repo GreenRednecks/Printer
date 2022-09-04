@@ -6,12 +6,14 @@
 
 #include "Adafruit_Thermal.h"
 #include "Adafruit_Keypad.h"
+#include <Wire.h>
 #include <LiquidCrystal.h>
 // #include "qrprint.h" //qrcode generator for thermal printer
 #include "qrcode.h"
 #include "qrImage.h"
 
 #define  GPIO_INPUT_IO_TRIGGER 5
+#define BACKLIGHT 0
 
 //wifi
 const char *ssid = SSID;
@@ -71,6 +73,9 @@ void setDisplayMenu()
 void setup()
 {
   Serial.begin(115200);
+
+  pinMode(BACKLIGHT, OUTPUT);
+
   ////////////wifi/////////////////
   //wifi
   Serial.print("Verbinde mich mit Netz: ");
@@ -334,6 +339,7 @@ void loop()
   delay(10);
 
 
+digitalWrite(BACKLIGHT, 1);
 
 }
 
